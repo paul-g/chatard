@@ -22,9 +22,7 @@
 
             $('form#emit').submit(function(event) {
                 socket.emit('message', 
-                            {data: username + ': ' + $('#emit_data').val()
-                             
-                            });
+                            {data: username + ': ' + $('#emit_data').val()});
                 $('#emit_data').val('');
                 return false;
             });
