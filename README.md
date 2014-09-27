@@ -3,6 +3,8 @@ chatard
 
 A simple chat application using Flask and SocketIO.
 
+## Screenshot
+
 ![](https://github.com/paul-g/chatard/blob/master/chatard.png)
 
 ## Requires
