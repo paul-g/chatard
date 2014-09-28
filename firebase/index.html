@@ -6,17 +6,22 @@
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
   </head>
   <body>
-
+    <h1>chatard</h1>
     <label style="display: inline-block; width: 100px;"> Username</label> <input type="text" style="width:300px" name="user" id="user_data" placeholder="Set your username">
     <div id="log" style="height:200px; width:440px; overflow-y: scroll"></div>
     <input type="text" style="width:400px" autocomplete="off" name="emit_data" id="emit_data" placeholder="Message">
 
     <script>
-      var dataRef = new Firebase('https://sizzling-torch-6706.firebaseio.com/');
-
       var send = $('#emit_data');
       var set = $('#user_data');
       var log = $('#log');
+
+      function displayMessage(m) {
+        log.append(m);
+        log.scrollTop(log[0].scrollHeight);
+      }
+
+      var dataRef = new Firebase('https://sizzling-torch-6706.firebaseio.com/');
 
       send.attr('disabled','disabled');
       set.focus();
@@ -24,6 +29,7 @@
         if (e.keyCode == 13) {
           username = set.val();
           send.removeAttr('disabled');
+          displayMessage('<br> Username set: ' + username);
           send.focus();
         }
       });
@@ -38,8 +44,7 @@
 
       dataRef.on('child_added', function(snapshot) {
         var message = snapshot.val();
-        log.append('<br>' + message.name + ': ' + message.text);
-        log.scrollTop(log[0].scrollHeight);
+        displayMessage('<br>' + message.name + ': ' + message.text);
       });
     </script>
   </body>

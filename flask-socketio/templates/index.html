@@ -1,51 +1,52 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-    <title>chatard</title>
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+  <head>
+    <title>chatard | Flask SocketIO</title>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function(){
-
-            $('#send').attr('disabled','disabled');
-
-            var socket = io.connect();
-            socket.on('connect', function() {
-                socket.emit('connect', {data: 'I\'m connected!'});
-            });
-
-            socket.on('response', function(msg) {
-                var elem = $('#log');
-                elem.append('<br>' + msg.data);
-                elem.scrollTop(elem[0].scrollHeight);
-            });
-
-            $('form#emit').submit(function(event) {
-                socket.emit('message', 
-                            {data: username + ': ' + $('#emit_data').val()});
-                $('#emit_data').val('');
-                return false;
-            });
-
-            $('form#user').submit(function(event) {
-                username = $('#user_data').val();
-                $('#send').removeAttr('disabled');
-                $('#log').append('<br> Username set: ' + username);
-                return false;
-            });
-        });
-    </script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>chatard</h1>
-    <form id="user" method='POST' action='#'>
     <label style="display: inline-block; width: 100px;"> Username</label> <input type="text" style="width:300px" name="user" id="user_data" placeholder="Set your username">
-    <input type="submit" style="width:50px" value="Set"></div>
-    </form>
-    <div id="log" style="height:200px; width:480px; overflow-y: scroll"></div>
-    <form id="emit" method='POST' action='#'>
-      <input type="text" style="width:400px" autocomplete="off" name="emit_data" id="emit_data" placeholder="Message">
-    <input type="submit" id="send" style="width:50px" value="Send"></div>
-    </form>
+    <div id="log" style="height:200px; width:440px; overflow-y: scroll"></div>
+    <input type="text" style="width:400px" autocomplete="off" name="emit_data" id="emit_data" placeholder="Message">
+
+    <script >
+      var send = $('#emit_data');
+      var set = $('#user_data');
+      var log = $('#log');
+
+      function displayMessage(m) {
+        log.append(m);
+        log.scrollTop(log[0].scrollHeight);
+      }
+
+      send.attr('disabled','disabled');
+
+      var socket = io.connect();
+      socket.on('connect', function() {
+          socket.emit('connect', {data: 'I\'m connected!'});
+      });
+
+      socket.on('response', function(msg) {
+        displayMessage('<br>' + msg.data);
+      });
+
+      send.keypress(function(e) {
+        if (e.keyCode == 13) {
+          socket.emit('message', {data: username + ': ' + send.val()});
+          send.val('');
+        }
+      });
+
+      set.keypress(function(e) {
+        if (e.keyCode == 13) {
+          username = set.val();
+          send.removeAttr('disabled');
+          displayMessage('<br> Username set: ' + username);
+          send.focus();
+        }
+      });
+   </script>
 </body>
 </html>
